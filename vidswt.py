@@ -30,7 +30,6 @@ class UIVidswt:
     def add_evt(self):
         def on_pgm_switched(*args, **kwargs):
             idx_in = kwargs.get("idx_in", -1)
-            print(kwargs)
             for idx, button in enumerate(self.INDEX_PGM_BUTTONS):
                 tp_set_button(self.tp, self.tp_port, button, idx == idx_in)
 

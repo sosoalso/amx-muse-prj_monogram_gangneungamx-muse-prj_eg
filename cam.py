@@ -89,7 +89,7 @@ class UICam:
     def __init__(self, tp, tp_port, cam_instance_list):
         self.tp = tp
         self.tp_port = tp_port
-        self.cam = cam_instance_list
+        self.cam_list = cam_instance_list
         self.selected_cam = 0
         self.last_recall_preset = 0
 
@@ -139,49 +139,49 @@ class UICam:
 
         def recall_preset(idx_preset):
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].recall_preset(idx_preset)
+                self.cam_list[self.selected_cam - 1].recall_preset(idx_preset)
                 self.refresh_preset_button()
 
         def store_preset(idx_preset):
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].store_preset(idx_preset)
+                self.cam_list[self.selected_cam - 1].store_preset(idx_preset)
                 self.show_cam_popup(self.selected_cam, idx_preset)
 
         def move_up():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].move_up()
+                self.cam_list[self.selected_cam - 1].move_up()
 
         def stop_move():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].move_stop()
+                self.cam_list[self.selected_cam - 1].move_stop()
 
         def move_down():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].move_down()
+                self.cam_list[self.selected_cam - 1].move_down()
 
         def move_left():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].move_left()
+                self.cam_list[self.selected_cam - 1].move_left()
 
         def move_right():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].move_right()
+                self.cam_list[self.selected_cam - 1].move_right()
 
         def zoom_in():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].zoom_in()
+                self.cam_list[self.selected_cam - 1].zoom_in()
 
         def zoom_out():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].zoom_out()
+                self.cam_list[self.selected_cam - 1].zoom_out()
 
         def stop_zoom():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].zoom_stop()
+                self.cam_list[self.selected_cam - 1].zoom_stop()
 
         def toggle_speed():
             if 1 <= self.selected_cam <= NUM_CAM:
-                self.cam[self.selected_cam - 1].toggle_speed()
+                self.cam_list[self.selected_cam - 1].toggle_speed()
             self.refresh_speed_button()
 
         # ---------------------------------------------------------------------------- #
@@ -204,7 +204,7 @@ class UICam:
         right_button = add_button(self.tp, self.tp_port, self.BTN_RIGHT, "push", move_right, comment="카메라 우 버튼")
         right_button.on("release", stop_move)
         zoom_in_button = add_button(
-            self.tp, self.tp_port, self.BTN_ZOOM_IN, "push", zoom_in, comment="카메라 줌인  버튼"
+            self.tp, self.tp_port, self.BTN_ZOOM_IN, "push", zoom_in, comment="카메라 줌인 버튼"
         )
         zoom_in_button.on("release", stop_zoom)
         zoom_out_button = add_button(
