@@ -18,14 +18,14 @@ from lib.lib_yeoul import pulse
 
 
 class UIRelay:
-    INDEX_PDU_ON = 51
-    INDEX_PDU_OFF = 52
-    INDEX_MIC_01_UP = 111
-    INDEX_MIC_01_STOP = 112
-    INDEX_MIC_01_DOWN = 113
-    INDEX_MIC_02_UP = 114
-    INDEX_MIC_02_STOP = 115
-    INDEX_MIC_02_DOWN = 116
+    PDU_ON_BUTTON = 51
+    PDU_OFF_BUTTON = 52
+    MIC_01_UP_BUTTON = 111
+    MIC_01_STOP_BUTTON = 112
+    MIC_01_DOWN_BUTTON = 113
+    MIC_02_UP_BUTTON = 114
+    MIC_02_STOP_BUTTON = 115
+    MIC_02_DOWN_BUTTON = 116
 
     def __init__(self, tp, tp_port):
         self.tp = tp
@@ -46,14 +46,14 @@ class UIRelay:
         relay_on()
 
     def add_tp(self):
-        add_button(self.tp, self.tp_port, self.INDEX_PDU_ON, "hold_2.0", lambda: self.set_relay(RELAY_PDU, True))
-        add_button(self.tp, self.tp_port, self.INDEX_PDU_OFF, "hold_2.0", lambda: self.set_relay(RELAY_PDU, False))
-        add_button(self.tp, self.tp_port, self.INDEX_MIC_01_UP, "push", lambda: self.pulse_relay(RELAY_MIC_01_UP))
-        add_button(self.tp, self.tp_port, self.INDEX_MIC_01_STOP, "push", lambda: self.pulse_relay(RELAY_MIC_01_STOP))
-        add_button(self.tp, self.tp_port, self.INDEX_MIC_01_DOWN, "push", lambda: self.pulse_relay(RELAY_MIC_01_DOWN))
-        add_button(self.tp, self.tp_port, self.INDEX_MIC_02_UP, "push", lambda: self.pulse_relay(RELAY_MIC_02_UP))
-        add_button(self.tp, self.tp_port, self.INDEX_MIC_02_STOP, "push", lambda: self.pulse_relay(RELAY_MIC_02_STOP))
-        add_button(self.tp, self.tp_port, self.INDEX_MIC_02_DOWN, "push", lambda: self.pulse_relay(RELAY_MIC_02_DOWN))
+        add_button(self.tp, self.tp_port, self.PDU_ON_BUTTON, "hold_2.0", lambda: self.set_relay(RELAY_PDU, True))
+        add_button(self.tp, self.tp_port, self.PDU_OFF_BUTTON, "hold_2.0", lambda: self.set_relay(RELAY_PDU, False))
+        add_button(self.tp, self.tp_port, self.MIC_01_UP_BUTTON, "push", lambda: self.pulse_relay(RELAY_MIC_01_UP))
+        add_button(self.tp, self.tp_port, self.MIC_01_STOP_BUTTON, "push", lambda: self.pulse_relay(RELAY_MIC_01_STOP))
+        add_button(self.tp, self.tp_port, self.MIC_01_DOWN_BUTTON, "push", lambda: self.pulse_relay(RELAY_MIC_01_DOWN))
+        add_button(self.tp, self.tp_port, self.MIC_02_UP_BUTTON, "push", lambda: self.pulse_relay(RELAY_MIC_02_UP))
+        add_button(self.tp, self.tp_port, self.MIC_02_STOP_BUTTON, "push", lambda: self.pulse_relay(RELAY_MIC_02_STOP))
+        add_button(self.tp, self.tp_port, self.MIC_02_DOWN_BUTTON, "push", lambda: self.pulse_relay(RELAY_MIC_02_DOWN))
 
     def refresh_pdu_button(self, *args):
         state = RELAY_PDU.state.value

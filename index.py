@@ -1,4 +1,4 @@
-# from audiomixer import ui_mixer_01\
+# from audiomixer import ui_mixer_01
 from mojo import context
 
 from cam import ui_cam_01
@@ -11,7 +11,8 @@ from relay import ui_relay_01
 from vidmtx import ui_vidmtx_01
 from vidprj import ui_vidprj_01_01, ui_vidprj_02_01
 from vidrec import ui_vidrec_01
-from vidswt import ui_vidswt_01
+
+# from vidswt import ui_vidswt_01
 
 # ---------------------------------------------------------------------------- #
 set_log_level("debug")
@@ -37,8 +38,8 @@ if __name__ == "__main__":
     ui_vidprj_02_01.add_tp()  # [v]
     ui_vidprj_02_01.add_evt()  # [v]
     # ---------------------------------------------------------------------------- #
-    ui_vidswt_01.add_tp()  # [v]
-    ui_vidswt_01.add_evt()  # [v]
+    # ui_vidswt_01.add_tp()  # [v]
+    # ui_vidswt_01.add_evt()  # [v]
     # ---------------------------------------------------------------------------- #
     ui_relay_01.add_tp()  # [v]
     ui_relay_01.add_evt()  # [v]

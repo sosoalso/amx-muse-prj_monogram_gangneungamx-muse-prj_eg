@@ -77,14 +77,14 @@ cam_instance_list = [PanaCam(ip) for ip in CAM_IP_LIST]
 
 
 class UICam:
-    BTN_CAM_SELECT = [111, 112]
-    BTN_UP = 101
-    BTN_DOWN = 102
-    BTN_LEFT = 103
-    BTN_RIGHT = 104
-    BTN_ZOOM_IN = 105
-    BTN_ZOOM_OUT = 106
-    BTN_TOGGLE_SPEED = 107
+    CAM_SELECT_BUTTON = [111, 112]
+    MOVE_UP_BUTTON = 101
+    MOVE_DOWN_BUTTON = 102
+    MOVE_LEFT_BUTTON = 103
+    MOVE_RIGHT_BUTTON = 104
+    ZOOM_IN_BUTTON = 105
+    ZOOM_OUT_BUTTON = 106
+    TOGGLE_SPEED_BUTTON = 107
 
     def __init__(self, tp, tp_port, cam_instance_list):
         self.tp = tp
@@ -100,7 +100,7 @@ class UICam:
         self.refresh_speed_button()
 
     def refresh_cam_select_button(self):
-        for index, btn in enumerate(self.BTN_CAM_SELECT):
+        for index, btn in enumerate(self.CAM_SELECT_BUTTON):
             tp_set_button(self.tp, self.tp_port, btn, self.selected_cam == index + 1)
 
     def refresh_preset_button(self):
@@ -115,10 +115,10 @@ class UICam:
     def refresh_speed_button(self):
         if 1 <= self.selected_cam <= NUM_CAM:
             tp_set_button(
-                self.tp, self.tp_port, self.BTN_TOGGLE_SPEED, cam_instance_list[self.selected_cam - 1].is_fast
+                self.tp, self.tp_port, self.TOGGLE_SPEED_BUTTON, cam_instance_list[self.selected_cam - 1].is_fast
             )
         else:
-            tp_set_button(self.tp, self.tp_port, self.BTN_TOGGLE_SPEED, False)
+            tp_set_button(self.tp, self.tp_port, self.TOGGLE_SPEED_BUTTON, False)
 
     def refresh_cam_all_button(self):
         self.refresh_cam_select_button()
@@ -131,7 +131,7 @@ class UICam:
 
     # ---------------------------------------------------------------------------- #
     def add_tp_cam(self):
-        def select_cam(idx_cam):  # 기본 매개변수로 idx_cam 캡처
+        def select_cam(idx_cam):
             self.selected_cam = idx_cam + 1
             self.refresh_cam_select_button()
             self.refresh_preset_button()
@@ -186,7 +186,7 @@ class UICam:
 
         # ---------------------------------------------------------------------------- #
         # NOTE : 카메라 선택 버튼 | ch 111-113
-        for idx_cam, btn in enumerate(self.BTN_CAM_SELECT):
+        for idx_cam, btn in enumerate(self.CAM_SELECT_BUTTON):
             add_button(self.tp, self.tp_port, btn, "push", lambda idx_cam=idx_cam: select_cam(idx_cam))
         # NOTE : 카메라 프리셋 버튼 | ch 1-10
         for idx_preset in range(1, 10 + 1):
@@ -195,24 +195,30 @@ class UICam:
             )
             preset_button.on("hold_1.5", store_preset)
         # NOTE : 카메라 각종 버튼 | ch 101-107
-        up_button = add_button(self.tp, self.tp_port, self.BTN_UP, "push", move_up, comment="카메라 상 버튼")
+        up_button = add_button(self.tp, self.tp_port, self.MOVE_UP_BUTTON, "push", move_up, comment="카메라 상 버튼")
         up_button.on("release", stop_move)
-        down_button = add_button(self.tp, self.tp_port, self.BTN_DOWN, "push", move_down, comment="카메라 하 버튼")
+        down_button = add_button(
+            self.tp, self.tp_port, self.MOVE_DOWN_BUTTON, "push", move_down, comment="카메라 하 버튼"
+        )
         down_button.on("release", stop_move)
-        left_button = add_button(self.tp, self.tp_port, self.BTN_LEFT, "push", move_left, comment="카메라 좌 버튼")
+        left_button = add_button(
+            self.tp, self.tp_port, self.MOVE_LEFT_BUTTON, "push", move_left, comment="카메라 좌 버튼"
+        )
         left_button.on("release", stop_move)
-        right_button = add_button(self.tp, self.tp_port, self.BTN_RIGHT, "push", move_right, comment="카메라 우 버튼")
+        right_button = add_button(
+            self.tp, self.tp_port, self.MOVE_RIGHT_BUTTON, "push", move_right, comment="카메라 우 버튼"
+        )
         right_button.on("release", stop_move)
         zoom_in_button = add_button(
-            self.tp, self.tp_port, self.BTN_ZOOM_IN, "push", zoom_in, comment="카메라 줌인 버튼"
+            self.tp, self.tp_port, self.ZOOM_IN_BUTTON, "push", zoom_in, comment="카메라 줌인 버튼"
         )
         zoom_in_button.on("release", stop_zoom)
         zoom_out_button = add_button(
-            self.tp, self.tp_port, self.BTN_ZOOM_OUT, "push", zoom_out, comment="카메라 줌 아웃 버튼"
+            self.tp, self.tp_port, self.ZOOM_OUT_BUTTON, "push", zoom_out, comment="카메라 줌 아웃 버튼"
         )
         zoom_out_button.on("release", stop_zoom)
         add_button(
-            self.tp, self.tp_port, self.BTN_TOGGLE_SPEED, "push", toggle_speed, comment="카메라 스피드 토글 버튼"
+            self.tp, self.tp_port, self.TOGGLE_SPEED_BUTTON, "push", toggle_speed, comment="카메라 스피드 토글 버튼"
         )
         context.log.info("add_tp_cam 등록 완료")
 

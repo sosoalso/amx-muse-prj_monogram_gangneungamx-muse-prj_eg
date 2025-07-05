@@ -95,28 +95,29 @@ class UIVidprj:
         self.tp_port = tp_port
         self.dv = vidprj_instance
         self.vidprj_index = vidprj_index
-        self.index_power_on_button = 10 + self.vidprj_index
-        self.index_power_off_button = 20 + self.vidprj_index
-        self.index_unmute_button = 30 + self.vidprj_index
-        self.index_mute_button = 40 + self.vidprj_index
+        # ---------------------------------------------------------------------------- #
+        self.POWER_ON_BUTTON = 10 + self.vidprj_index
+        self.POWER_OFF_BUTTON = 20 + self.vidprj_index
+        self.UNMUTE_BUTTON = 30 + self.vidprj_index
+        self.MUTE_BUTTON = 40 + self.vidprj_index
 
     def add_event_handlers(self):
         self.dv.on("power", self.refresh_vidprj_power_button)
         self.dv.on("mute", self.refresh_vidprj_mute_button)
 
     def refresh_vidprj_power_button(self, *args, **kwargs):
-        tp_set_button(self.tp, self.tp_port, self.index_power_on_button, self.dv.power)
-        tp_set_button(self.tp, self.tp_port, self.index_power_off_button, not self.dv.power)
+        tp_set_button(self.tp, self.tp_port, self.POWER_ON_BUTTON, self.dv.power)
+        tp_set_button(self.tp, self.tp_port, self.POWER_OFF_BUTTON, not self.dv.power)
 
     def refresh_vidprj_mute_button(self, *args, **kwargs):
-        tp_set_button(self.tp, self.tp_port, self.index_unmute_button, not self.dv.mute)
-        tp_set_button(self.tp, self.tp_port, self.index_mute_button, self.dv.mute)
+        tp_set_button(self.tp, self.tp_port, self.UNMUTE_BUTTON, not self.dv.mute)
+        tp_set_button(self.tp, self.tp_port, self.MUTE_BUTTON, self.dv.mute)
 
     def add_tp(self):
         add_button(
             self.tp,
             self.tp_port,
-            self.index_power_on_button,
+            self.POWER_ON_BUTTON,
             "push",
             self.dv.power_on,
             comment=f"비디오 프로젝터 {self.vidprj_index}번 전원 켜기 버튼",
@@ -124,7 +125,7 @@ class UIVidprj:
         add_button(
             self.tp,
             self.tp_port,
-            self.index_power_off_button,
+            self.POWER_OFF_BUTTON,
             "push",
             self.dv.power_off,
             comment=f"비디오 프로젝터 {self.vidprj_index}번 전원 끄기 버튼",
@@ -132,7 +133,7 @@ class UIVidprj:
         add_button(
             self.tp,
             self.tp_port,
-            self.index_unmute_button,
+            self.UNMUTE_BUTTON,
             "push",
             self.dv.mute_off,
             comment=f"비디오 프로젝터 {self.vidprj_index}번 뮤트 해제 버튼",
@@ -140,7 +141,7 @@ class UIVidprj:
         add_button(
             self.tp,
             self.tp_port,
-            self.index_mute_button,
+            self.MUTE_BUTTON,
             "push",
             self.dv.mute_on,
             comment=f"비디오 프로젝터 {self.vidprj_index}번 뮤트 버튼",

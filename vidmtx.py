@@ -3,12 +3,8 @@ import re
 from config import TP_01, TP_PORT_VIDMTX, VIDMTX
 from lib.button import add_button
 from lib.eventmanager import EventManager
-from lib.lib_tp import (
-    tp_set_button,
-    tp_set_button_text_unicode,
-    tp_set_button_text_unicode_ss,
-)
-from lib.lib_yeoul import log_error, log_info
+from lib.lib_tp import tp_set_button, tp_set_button_text_unicode
+from lib.lib_yeoul import handle_exception, log_error, log_info
 from lib.userdata import Userdata
 
 
@@ -22,16 +18,23 @@ class Vidmtx(EventManager):
         self.name = name
         self.max_inputs = max_inputs
         self.max_outputs = max_outputs
-        self.routes = Userdata(
-            f"{self.name}_routes.json", default_value={int(key): 0 for key in range(1, max_outputs + 1)}
-        )
+        self.userdata = Userdata()
+        self.routes = self.userdata.get_value(f"{self.name}_routes", {str(key): 0 for key in range(1, max_outputs + 1)})
         self.dv.receive.listen(self.parse_response)
+
+    @handle_exception
+    def set_route_value(self, index_in, index_out):
+        self.routes[str(index_out)] = index_in
+        self.userdata.set_value(f"{self.name}_routes", self.routes)
+
+    @handle_exception
+    def get_route_value(self, index_out):
+        return self.routes.get(str(index_out), 0)
 
     def parse_response(self, *args):
         try:
             data_text = args[0].arguments["data"].decode()
             parsed_data_text_chunks = data_text.split("\n\n")
-            update = False
             for parsed_data_text in parsed_data_text_chunks:
                 splitted_message = parsed_data_text.split("\n")
                 if "VIDEO OUSELF.TPUT ROUTING:" in splitted_message[0]:
@@ -41,25 +44,23 @@ class Vidmtx(EventManager):
                             update |= True
                             line = match.group(0)
                             idx_out, idx_in = map(int, line.split())
-                            self.routes.set_value(idx_out + 1, idx_in + 1)
+                            self.set_route_value(idx_out + 1, idx_in + 1)
                             self.emit("route", index_in=idx_in + 1, index_out=idx_out + 1)
                             # self.userdata.set_value(key=_out + 1, value=idx_in + 1)
-            if update:
-                self.routes.save_file()
         except (AttributeError, KeyError, UnicodeDecodeError, ValueError) as e:
             log_error(f"Error decoding data: {e}")
 
     def set_route(self, index_in, index_out):
         if 0 <= index_in <= self.max_inputs and 1 <= index_out <= self.max_outputs:
             self.dv.send(f"VIDEO OUTPUT ROUTING:\n{index_out-1} {index_in-1}\n\n".encode())
-            self.routes.set_value(index_out, index_in)
+            self.set_route_value(index_in, index_out)
             self.emit("route", index_in=index_in, index_out=index_out)
 
 
 # ---------------------------------------------------------------------------- #
 vidmtx_instance = Vidmtx(VIDMTX, "vidmtx")  # INFO - 제어 장비 인스턴스
 # ---------------------------------------------------------------------------- #
-# SECTION - SELF.TP
+# SECTION - TP
 # ---------------------------------------------------------------------------- #
 
 
@@ -123,13 +124,17 @@ class UIVidmtx:
             tp_set_button(self.tp, self.tp_port, index_in + 100, self.selected_input == index_in)
 
     def refresh_output_button(self):
-        for index_out in range(1, self.NUM_VIDMTX_OUT + 1):
-            tp_set_button(
-                self.tp,
-                self.tp_port,
-                index_out + 200,
-                self.dv.routes.get_value(index_out, -1) == self.selected_input,
-            )
+        if self.selected_input == 0:
+            for index_out in range(1, self.NUM_VIDMTX_OUT + 1):
+                tp_set_button(self.tp, self.tp_port, index_out + 200, False)
+        else:
+            for index_out in range(1, self.NUM_VIDMTX_OUT + 1):
+                tp_set_button(
+                    self.tp,
+                    self.tp_port,
+                    index_out + 200,
+                    self.dv.get_route_value(index_out) == self.selected_input,
+                )
 
     def refresh_input_button_name(self):
         for index_out in range(1, self.NUM_VIDMTX_IN + 1):
@@ -145,7 +150,7 @@ class UIVidmtx:
 
     def refresh_output_route_name(self, index_out):
         if 0 < index_out <= self.NUM_VIDMTX_OUT:
-            index_input = self.dv.routes.get_value(index_out, -1)
+            index_input = self.dv.get_route_value(index_out)
             if 0 < index_input <= self.NUM_VIDMTX_IN:
                 tp_set_button_text_unicode(self.tp, self.tp_port, index_out + 300, self.NAME_VIDMTX_IN[index_input - 1])
             else:
